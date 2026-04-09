@@ -21,7 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { MoneyInput } from '@/components/ui/money-input'
 import { parseUrlState, useUrlSync } from '@/lib/use-url-state'
-import { Calculator, TrendingUp, Sparkles, Globe, Laptop, Plane, Info, AlertTriangle, Sun, Moon, Languages } from 'lucide-react'
+import { Calculator, TrendingUp, Sparkles, Globe, Laptop, Plane, Info, AlertTriangle, Sun, Moon, Languages, Github } from 'lucide-react'
 
 type Section = 'calculator' | 'raise' | 'insights'
 
@@ -112,6 +112,15 @@ export default function Page() {
               >
                 {theme === 'dark' ? <Sun size={14} aria-hidden="true" /> : <Moon size={14} aria-hidden="true" />}
               </button>
+              <a
+                href="https://github.com/bishojbk/nepal-tax-calc"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View source on GitHub"
+                className="flex items-center justify-center w-8 h-8 text-muted-foreground hover:text-foreground bg-secondary/80 hover:bg-secondary rounded-lg transition-all"
+              >
+                <Github size={14} aria-hidden="true" />
+              </a>
             </div>
           </div>
           <ModeSelector value={mode} onChange={setMode} />
