@@ -13,16 +13,27 @@ export function InhandHero({ result }: Props) {
   const { t } = useApp()
 
   return (
-    <div className="text-center py-2 relative">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-xl pointer-events-none" />
-      <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1 relative font-semibold">{t('output.inhand')}</p>
+    <div className="text-center py-4 relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/4 via-transparent to-warm/4 rounded-xl pointer-events-none" />
+      <p className="text-[11px] text-muted-foreground uppercase tracking-[0.15em] mb-2 relative font-semibold">{t('output.inhand')}</p>
       <div className="relative">
-        <span className="text-muted-foreground text-2xl md:text-3xl font-mono mr-1">₨</span>
+        <span className="text-muted-foreground text-lg md:text-xl font-mono mr-1">₨</span>
         <AnimatedNumber
           value={result.inhand}
           format={(n) => Math.round(n).toLocaleString('en-IN')}
-          className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight"
+          className="text-4xl md:text-5xl font-heading font-semibold text-copper-gradient tracking-tight"
         />
+      </div>
+      <div className="mt-2 relative">
+        <p className="text-[11px] text-muted-foreground uppercase tracking-[0.15em] mb-1 font-semibold">{t('output.annual.inhand')}</p>
+        <div>
+          <span className="text-muted-foreground text-sm font-mono mr-0.5">₨</span>
+          <AnimatedNumber
+            value={result.inhand * 12}
+            format={(n) => Math.round(n).toLocaleString('en-IN')}
+            className="text-xl md:text-2xl font-heading font-semibold text-foreground tracking-tight"
+          />
+        </div>
       </div>
       <div className="mt-3 flex items-center justify-center gap-4 text-sm relative">
         <span className="text-muted-foreground">

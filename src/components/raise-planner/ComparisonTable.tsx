@@ -10,12 +10,15 @@ interface Props {
   target: CalcResult
 }
 
-const rows: { labelKey: string; key: keyof CalcResult }[] = [
+type RowDef = { labelKey: string; key: keyof CalcResult; highlight?: boolean; multiplier?: number }
+
+const rows: RowDef[] = [
   { labelKey: 'output.gross', key: 'gross' },
   { labelKey: 'output.ssf', key: 'ssfMonthly' },
   { labelKey: 'output.cit', key: 'citMonthly' },
   { labelKey: 'output.tds', key: 'monthlyTax' },
-  { labelKey: 'output.inhand.label', key: 'inhand' },
+  { labelKey: 'output.inhand.label', key: 'inhand', highlight: true },
+  { labelKey: 'output.annual.inhand', key: 'inhand', highlight: true, multiplier: 12 },
   { labelKey: 'slab.annual.taxable', key: 'annualTaxable' },
   { labelKey: 'slab.annual.tax', key: 'annualTax' },
 ]
@@ -40,18 +43,19 @@ export function ComparisonTable({ current, target }: Props) {
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => {
-                const cv = current[row.key] as number
-                const tv = target[row.key] as number
+              {rows.map((row, i) => {
+                const m = row.multiplier ?? 1
+                const cv = (current[row.key] as number) * m
+                const tv = (target[row.key] as number) * m
                 const delta = tv - cv
                 return (
-                  <tr key={row.key} className="border-t border-border/50">
-                    <td className="py-2 text-muted-foreground">{t(row.labelKey as any)}</td>
-                    <td className="py-2 text-right font-mono text-foreground">{formatNPR(cv)}</td>
-                    <td className="py-2 text-right font-mono text-foreground">{formatNPR(tv)}</td>
-                    <td className={`py-2 text-right font-mono ${
-                      row.key === 'inhand'
-                        ? delta >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+                  <tr key={`${row.key}-${i}`} className={`border-t ${row.highlight ? 'border-border' : 'border-border/50'}`}>
+                    <td className={`py-2.5 ${row.highlight ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>{t(row.labelKey as any)}</td>
+                    <td className="py-2.5 text-right font-mono text-foreground">{formatNPR(cv)}</td>
+                    <td className="py-2.5 text-right font-mono text-foreground">{formatNPR(tv)}</td>
+                    <td className={`py-2.5 text-right font-mono ${
+                      row.highlight
+                        ? delta >= 0 ? 'text-positive font-semibold' : 'text-primary font-semibold'
                         : 'text-muted-foreground'
                     }`}>
                       {delta >= 0 ? '+' : ''}{formatNPR(delta)}
@@ -60,10 +64,10 @@ export function ComparisonTable({ current, target }: Props) {
                 )
               })}
               <tr className="border-t border-border">
-                <td className="py-2 text-muted-foreground">{t('common.effective.rate')}</td>
-                <td className="py-2 text-right font-mono text-foreground">{formatPct(current.effectiveRate)}</td>
-                <td className="py-2 text-right font-mono text-foreground">{formatPct(target.effectiveRate)}</td>
-                <td className="py-2 text-right font-mono text-muted-foreground">
+                <td className="py-2.5 text-muted-foreground">{t('common.effective.rate')}</td>
+                <td className="py-2.5 text-right font-mono text-foreground">{formatPct(current.effectiveRate)}</td>
+                <td className="py-2.5 text-right font-mono text-foreground">{formatPct(target.effectiveRate)}</td>
+                <td className="py-2.5 text-right font-mono text-muted-foreground">
                   {formatPct(target.effectiveRate - current.effectiveRate)}
                 </td>
               </tr>

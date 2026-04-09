@@ -52,7 +52,7 @@ export function DeductionToggles({ gross, options, maxCitMonthly, onChange }: Pr
         </div>
 
         {/* CIT */}
-        <div className="space-y-1.5 pt-1 border-t border-border">
+        <div className="space-y-1.5 pt-4 border-t border-border">
           <label className="flex items-center justify-between gap-3 cursor-pointer">
             <div className="flex-1">
               <span className="text-sm font-medium text-foreground">{t('cit.title')}</span>
@@ -75,9 +75,7 @@ export function DeductionToggles({ gross, options, maxCitMonthly, onChange }: Pr
                 step={100}
                 value={Math.min(options.citAmount, Math.round(maxCitMonthly))}
                 onChange={(e) => onChange({ citAmount: Number(e.target.value) })}
-                className="w-full h-1.5 rounded-full appearance-none bg-secondary cursor-pointer accent-primary
-                  [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-background
-                  [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-background"
+                className="w-full"
               />
               <div className="flex justify-between items-center text-xs font-mono">
                 <span className="text-muted-foreground">₨ 0</span>
@@ -86,13 +84,13 @@ export function DeductionToggles({ gross, options, maxCitMonthly, onChange }: Pr
               </div>
               <button
                 onClick={() => onChange({ citAmount: Infinity })}
-                className="text-xs text-primary hover:text-primary/80 transition-colors font-medium"
+                className="text-xs text-primary hover:text-primary/80 transition-colors font-medium underline underline-offset-2"
               >
                 {t('cit.usemax')}
               </button>
               {gross > 125_000 && (
-                <div className="bg-amber-500/10 dark:bg-amber-500/10 border border-amber-500/20 rounded-md p-2 mt-1">
-                  <p className="text-xs text-amber-700 dark:text-amber-400">
+                <div className="bg-warm/8 border border-warm/15 rounded-lg p-3 mt-1">
+                  <p className="text-xs text-warm">
                     {t('cit.paradox')}
                   </p>
                 </div>
@@ -102,12 +100,12 @@ export function DeductionToggles({ gross, options, maxCitMonthly, onChange }: Pr
         </div>
 
         {/* Insurance deductions */}
-        <div className="space-y-3 pt-3 border-t border-border">
-          <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">{t('deductions.title')}</p>
+        <div className="space-y-3 pt-4 border-t border-border">
+          <p className="text-xs text-muted-foreground font-semibold uppercase tracking-[0.1em]">{t('deductions.title')}</p>
 
           <label className="flex items-center justify-between gap-3 cursor-pointer">
             <div>
-              <span className="text-sm text-foreground">{t('deductions.life')}</span>
+              <span className="text-sm text-foreground font-medium">{t('deductions.life')}</span>
               <span className="block text-xs text-muted-foreground">{formatNPR(TAX_CONFIG.deductions.lifeInsurance.max)}{t('common.yr')} {t('common.cap')}</span>
             </div>
             <Switch
@@ -118,7 +116,7 @@ export function DeductionToggles({ gross, options, maxCitMonthly, onChange }: Pr
 
           <label className="flex items-center justify-between gap-3 cursor-pointer">
             <div>
-              <span className="text-sm text-foreground">{t('deductions.health')}</span>
+              <span className="text-sm text-foreground font-medium">{t('deductions.health')}</span>
               <span className="block text-xs text-muted-foreground">{formatNPR(TAX_CONFIG.deductions.healthInsurance.max)}{t('common.yr')} {t('common.cap')}</span>
             </div>
             <Switch
@@ -129,7 +127,7 @@ export function DeductionToggles({ gross, options, maxCitMonthly, onChange }: Pr
 
           <label className="flex items-center justify-between gap-3 cursor-pointer">
             <div>
-              <span className="text-sm text-foreground">{t('deductions.building')}</span>
+              <span className="text-sm text-foreground font-medium">{t('deductions.building')}</span>
               <span className="block text-xs text-muted-foreground">{t('common.upto')} {formatNPR(TAX_CONFIG.deductions.buildingInsurance.max)}{t('common.yr')}</span>
             </div>
             <Switch
@@ -138,30 +136,34 @@ export function DeductionToggles({ gross, options, maxCitMonthly, onChange }: Pr
             />
           </label>
 
-          <div>
-            <label className="text-sm text-foreground block mb-1">{t('deductions.donation')}</label>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={options.donationAnnual > 0 ? Math.round(options.donationAnnual).toLocaleString('en-IN') : ''}
-              placeholder="0"
-              onChange={(e) => {
-                const v = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10) || 0
-                const maxDonation = Math.min(
-                  TAX_CONFIG.deductions.donation.maxAbsolute,
-                  Math.round(gross * 12 * TAX_CONFIG.deductions.donation.maxPctOfTaxable)
-                )
-                onChange({ donationAnnual: Math.min(v, maxDonation) })
-              }}
-              className="w-full bg-secondary/60 border border-border rounded-lg px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:border-primary/50 transition-colors"
-            />
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {t('cit.max')}: {formatNPR(Math.min(
-                TAX_CONFIG.deductions.donation.maxAbsolute,
-                Math.round(gross * 12 * TAX_CONFIG.deductions.donation.maxPctOfTaxable)
-              ))} ({t('deductions.donation.cap')})
-            </p>
-          </div>
+          {(() => {
+            const maxDonation = Math.min(
+              TAX_CONFIG.deductions.donation.maxAbsolute,
+              Math.round(gross * 12 * TAX_CONFIG.deductions.donation.maxPctOfTaxable)
+            )
+            const isCapped = options.donationAnnual > 0 && options.donationAnnual >= maxDonation
+            return (
+              <div>
+                <label htmlFor="donation-input" className="text-sm text-foreground font-medium block mb-1">{t('deductions.donation')}</label>
+                <input
+                  id="donation-input"
+                  type="text"
+                  inputMode="numeric"
+                  aria-label={t('deductions.donation')}
+                  value={options.donationAnnual > 0 ? Math.round(options.donationAnnual).toLocaleString('en-IN') : ''}
+                  placeholder="0"
+                  onChange={(e) => {
+                    const v = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10) || 0
+                    onChange({ donationAnnual: Math.min(v, maxDonation) })
+                  }}
+                  className="w-full bg-background border-2 border-border rounded-lg px-3 py-2.5 text-sm font-mono text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                />
+                <p className={`text-xs mt-1 ${isCapped ? 'text-warm font-medium' : 'text-muted-foreground'}`}>
+                  {isCapped ? `Capped at ${formatNPR(maxDonation)}` : `${t('cit.max')}: ${formatNPR(maxDonation)}`} ({t('deductions.donation.cap')})
+                </p>
+              </div>
+            )
+          })()}
         </div>
       </CardContent>
     </Card>

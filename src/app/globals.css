@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans), 'Poppins', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-heading: var(--font-geist-sans), 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body), 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), 'JetBrains Mono', ui-monospace, monospace;
+  --font-heading: var(--font-display), 'Fraunces', Georgia, 'Noto Serif Devanagari', serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -39,84 +39,93 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  --color-positive: var(--positive);
+  --color-info: var(--info);
+  --color-warm: var(--warm);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 2.5);
+  --radius-4xl: calc(var(--radius) * 3);
 }
 
-/* ── Light theme (default) ──────────────────────────── */
+/* ── Light theme — Himalayan Ledger ─────────────── */
 :root {
-  --background: oklch(0.98 0.002 260);
-  --foreground: oklch(0.15 0.01 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.01 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.01 260);
-  --primary: oklch(0.65 0.19 55);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.94 0.005 260);
-  --secondary-foreground: oklch(0.25 0.01 260);
-  --muted: oklch(0.94 0.005 260);
-  --muted-foreground: oklch(0.45 0.01 260);
-  --accent: oklch(0.94 0.005 260);
-  --accent-foreground: oklch(0.25 0.01 260);
-  --destructive: oklch(0.55 0.22 25);
-  --border: oklch(0.88 0.005 260);
-  --input: oklch(0.88 0.005 260);
-  --ring: oklch(0.65 0.19 55);
-  --chart-1: oklch(0.65 0.19 55);
-  --chart-2: oklch(0.55 0.18 160);
-  --chart-3: oklch(0.50 0.15 250);
-  --chart-4: oklch(0.55 0.2 30);
-  --chart-5: oklch(0.60 0.15 310);
+  --background: #F7F3EE;
+  --foreground: #1A1714;
+  --card: #FFFFFF;
+  --card-foreground: #1A1714;
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1714;
+  --primary: #B4632A;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EFE9E0;
+  --secondary-foreground: #1A1714;
+  --muted: #EFE9E0;
+  --muted-foreground: #70665C;
+  --accent: #EFE9E0;
+  --accent-foreground: #1A1714;
+  --destructive: #C4422B;
+  --border: #E2D9CE;
+  --input: #E2D9CE;
+  --ring: #B4632A;
+  --positive: #3D7A5F;
+  --info: #3B6B8A;
+  --warm: #C49A3C;
+  --chart-1: #B4632A;
+  --chart-2: #3D7A5F;
+  --chart-3: #3B6B8A;
+  --chart-4: #C49A3C;
+  --chart-5: #8B5E3C;
   --radius: 0.75rem;
-  --sidebar: oklch(0.97 0.002 260);
-  --sidebar-foreground: oklch(0.15 0.01 260);
-  --sidebar-primary: oklch(0.65 0.19 55);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.94 0.005 260);
-  --sidebar-accent-foreground: oklch(0.25 0.01 260);
-  --sidebar-border: oklch(0.88 0.005 260);
-  --sidebar-ring: oklch(0.65 0.19 55);
+  --sidebar: #EFE9E0;
+  --sidebar-foreground: #1A1714;
+  --sidebar-primary: #B4632A;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #EFE9E0;
+  --sidebar-accent-foreground: #1A1714;
+  --sidebar-border: #E2D9CE;
+  --sidebar-ring: #B4632A;
 }
 
-/* ── Dark theme ─────────────────────────────────────── */
+/* ── Dark theme — Warm lamplight ───────────────── */
 .dark {
-  --background: oklch(0.14 0.006 260);
-  --foreground: oklch(0.97 0 0);
-  --card: oklch(0.18 0.006 260);
-  --card-foreground: oklch(0.97 0 0);
-  --popover: oklch(0.18 0.006 260);
-  --popover-foreground: oklch(0.97 0 0);
-  --primary: oklch(0.80 0.17 80);
-  --primary-foreground: oklch(0.13 0 0);
-  --secondary: oklch(0.22 0.006 260);
-  --secondary-foreground: oklch(0.93 0 0);
-  --muted: oklch(0.22 0.006 260);
-  --muted-foreground: oklch(0.75 0 0);
-  --accent: oklch(0.22 0.006 260);
-  --accent-foreground: oklch(0.97 0 0);
-  --destructive: oklch(0.65 0.22 25);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.80 0.17 80);
-  --chart-1: oklch(0.80 0.17 80);
-  --chart-2: oklch(0.70 0.18 160);
-  --chart-3: oklch(0.60 0.15 250);
-  --chart-4: oklch(0.65 0.2 30);
-  --chart-5: oklch(0.78 0.15 310);
-  --sidebar: oklch(0.18 0.006 260);
-  --sidebar-foreground: oklch(0.97 0 0);
-  --sidebar-primary: oklch(0.80 0.17 80);
-  --sidebar-primary-foreground: oklch(0.13 0 0);
-  --sidebar-accent: oklch(0.22 0.006 260);
-  --sidebar-accent-foreground: oklch(0.97 0 0);
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.80 0.17 80);
+  --background: #131110;
+  --foreground: #F0EBE3;
+  --card: #1C1916;
+  --card-foreground: #F0EBE3;
+  --popover: #1C1916;
+  --popover-foreground: #F0EBE3;
+  --primary: #D4863A;
+  --primary-foreground: #131110;
+  --secondary: #231F1A;
+  --secondary-foreground: #F0EBE3;
+  --muted: #231F1A;
+  --muted-foreground: #9C9488;
+  --accent: #231F1A;
+  --accent-foreground: #F0EBE3;
+  --destructive: #E86850;
+  --border: #302A23;
+  --input: #302A23;
+  --ring: #D4863A;
+  --positive: #5BA882;
+  --info: #5B9BC4;
+  --warm: #DAB355;
+  --chart-1: #D4863A;
+  --chart-2: #5BA882;
+  --chart-3: #5B9BC4;
+  --chart-4: #DAB355;
+  --chart-5: #B8845C;
+  --sidebar: #1C1916;
+  --sidebar-foreground: #F0EBE3;
+  --sidebar-primary: #D4863A;
+  --sidebar-primary-foreground: #131110;
+  --sidebar-accent: #231F1A;
+  --sidebar-accent-foreground: #F0EBE3;
+  --sidebar-border: #302A23;
+  --sidebar-ring: #D4863A;
 }
 
 @layer base {
@@ -125,10 +134,10 @@
     scrollbar-width: thin;
   }
   .dark * {
-    scrollbar-color: rgba(255,255,255,0.08) transparent;
+    scrollbar-color: rgba(240, 235, 227, 0.06) transparent;
   }
   :not(.dark) * {
-    scrollbar-color: rgba(0,0,0,0.12) transparent;
+    scrollbar-color: rgba(26, 23, 20, 0.08) transparent;
   }
   body {
     @apply bg-background text-foreground;
@@ -159,4 +168,152 @@
     outline-offset: 0px;
     border-radius: var(--radius-sm);
   }
+}
+
+/* ── Warm card shadow ───────────────────────────── */
+.ledger-shadow {
+  box-shadow:
+    0 0 0 1px rgba(26, 23, 20, 0.05),
+    0 1px 3px rgba(26, 23, 20, 0.04),
+    0 4px 16px rgba(26, 23, 20, 0.06);
+}
+.dark .ledger-shadow {
+  box-shadow:
+    0 0 0 1px rgba(240, 235, 227, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.3);
+}
+.ledger-shadow-hover {
+  box-shadow:
+    0 0 0 1px rgba(26, 23, 20, 0.06),
+    0 4px 12px rgba(26, 23, 20, 0.08),
+    0 12px 32px rgba(26, 23, 20, 0.1);
+}
+.dark .ledger-shadow-hover {
+  box-shadow:
+    0 0 0 1px rgba(240, 235, 227, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Keep backward compat for any leftover refs */
+.airbnb-shadow {
+  box-shadow:
+    0 0 0 1px rgba(26, 23, 20, 0.05),
+    0 1px 3px rgba(26, 23, 20, 0.04),
+    0 4px 16px rgba(26, 23, 20, 0.06);
+}
+.dark .airbnb-shadow {
+  box-shadow:
+    0 0 0 1px rgba(240, 235, 227, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Gradient accent line (prayer-flag inspired) ── */
+.gradient-line {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--chart-2) 0%,
+    var(--chart-3) 25%,
+    var(--chart-1) 50%,
+    var(--chart-4) 75%,
+    var(--chart-2) 100%
+  );
+}
+
+/* ── Subtle dhaka-weave pattern ────────────────── */
+.dhaka-pattern {
+  background-image:
+    linear-gradient(45deg, transparent 47.5%, var(--primary) 47.5%, var(--primary) 52.5%, transparent 52.5%),
+    linear-gradient(-45deg, transparent 47.5%, var(--primary) 47.5%, var(--primary) 52.5%, transparent 52.5%);
+  background-size: 20px 20px;
+  opacity: 0.018;
+}
+.dark .dhaka-pattern {
+  opacity: 0.025;
+}
+
+/* ── Warm glass (dark mode cards + header) ─────── */
+.warm-glass {
+  background: rgba(28, 25, 22, 0.85);
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+}
+
+/* ── Hero number gradient text ─────────────────── */
+.text-copper-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--chart-4) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Custom range slider ───────────────────────── */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  cursor: pointer;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 3px solid var(--card);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.05);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 3px solid var(--card);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  transition: transform 0.15s ease;
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+}
+
+/* ── Smooth transitions ────────────────────────── */
+.card-hover {
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.card-hover:hover {
+  box-shadow:
+    0 0 0 1px rgba(26, 23, 20, 0.06),
+    0 4px 12px rgba(26, 23, 20, 0.08),
+    0 12px 32px rgba(26, 23, 20, 0.1);
+  transform: translateY(-1px);
+}
+.dark .card-hover:hover {
+  box-shadow:
+    0 0 0 1px rgba(240, 235, 227, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    0 12px 32px rgba(0, 0, 0, 0.35);
 }

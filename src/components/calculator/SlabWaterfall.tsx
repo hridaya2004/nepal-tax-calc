@@ -5,13 +5,24 @@ import type { SlabBreakdown } from '@/lib/calculate'
 import { formatNPR } from '@/lib/format'
 import { useApp } from '@/lib/app-context'
 
+/* Nepal earth-tone palette for tax slabs — prayer-flag inspired */
 const SLAB_COLORS: Record<string, string> = {
-  '1% SST': '#6ee7b7',
-  '10%': '#2dd4bf',
-  '20%': '#eab308',
-  '30%': '#f97316',
-  '36%': '#ef4444',
-  '39%': '#dc2626',
+  '1% SST': 'var(--positive)',
+  '10%': 'var(--info)',
+  '20%': 'var(--warm)',
+  '30%': 'var(--primary)',
+  '36%': 'var(--destructive)',
+  '39%': '#7A2E1A',
+}
+
+/* Fallback colors for dark mode */
+const SLAB_COLORS_DARK: Record<string, string> = {
+  '1% SST': 'var(--positive)',
+  '10%': 'var(--info)',
+  '20%': 'var(--warm)',
+  '30%': 'var(--primary)',
+  '36%': 'var(--destructive)',
+  '39%': '#B85C3C',
 }
 
 interface Props {
@@ -33,27 +44,35 @@ export function SlabWaterfall({ breakdown, annualTaxable }: Props) {
   const maxIncome = Math.max(...breakdown.map((s) => s.income), 1)
 
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-3">
       {breakdown.map((slab, i) => {
         const pct = slab.income / maxIncome
-        const color = SLAB_COLORS[slab.label] || '#6ee7b7'
+        const colorLight = SLAB_COLORS[slab.label] || 'var(--positive)'
+        const colorDark = SLAB_COLORS_DARK[slab.label] || 'var(--positive)'
         return (
           <div key={i}>
-            <div className="flex items-center justify-between text-xs mb-1">
-              <span className="text-muted-foreground font-semibold">{slab.label}</span>
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <span className="text-foreground font-semibold">{slab.label}</span>
               <span className="text-muted-foreground font-mono">
                 {formatNPR(slab.tax)}
               </span>
             </div>
-            <div className="h-7 bg-secondary/60 rounded-md overflow-hidden relative">
+            <div className="h-7 bg-secondary rounded-md overflow-hidden relative">
               <motion.div
-                className="h-full rounded-md"
-                style={{ backgroundColor: color }}
+                className="h-full rounded-md dark:hidden"
+                style={{ backgroundColor: colorLight }}
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.max(pct * 100, 3)}%` }}
                 transition={{ type: 'spring', stiffness: 100, damping: 20, delay: i * 0.06 }}
               />
-              <span className="absolute inset-0 flex items-center px-2.5 text-xs font-mono font-semibold text-black/80 dark:text-black/70">
+              <motion.div
+                className="h-full rounded-md hidden dark:block absolute top-0 left-0"
+                style={{ backgroundColor: colorDark }}
+                initial={{ width: 0 }}
+                animate={{ width: `${Math.max(pct * 100, 3)}%` }}
+                transition={{ type: 'spring', stiffness: 100, damping: 20, delay: i * 0.06 }}
+              />
+              <span className="absolute inset-0 flex items-center px-3 text-xs font-mono font-semibold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
                 {formatNPR(slab.income)}
               </span>
             </div>

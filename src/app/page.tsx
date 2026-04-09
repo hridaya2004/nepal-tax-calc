@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState, useCallback, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ModeSelector, type IncomeMode } from '@/components/layout/ModeSelector'
 import { StickyOutput } from '@/components/layout/StickyOutput'
@@ -19,6 +19,8 @@ import { calculate, type CalcOptions } from '@/lib/calculate'
 import { formatNPR, formatPct } from '@/lib/format'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
+import { MoneyInput } from '@/components/ui/money-input'
+import { parseUrlState, useUrlSync } from '@/lib/use-url-state'
 import { Calculator, TrendingUp, Sparkles, Globe, Laptop, Plane, Info, AlertTriangle, Sun, Moon, Languages } from 'lucide-react'
 
 type Section = 'calculator' | 'raise' | 'insights'
@@ -45,6 +47,18 @@ export default function Page() {
     foreignTaxPaidAnnual: 0,
   })
 
+  // Restore state from URL on mount
+  useEffect(() => {
+    const urlState = parseUrlState()
+    if (!urlState) return
+    if (urlState.mode) setMode(urlState.mode)
+    if (urlState.gross !== undefined) setGross(urlState.gross)
+    if (urlState.options) setOptions(urlState.options)
+  }, [])
+
+  // Sync state to URL on changes
+  useUrlSync(mode, gross, options)
+
   const handleOptionsChange = useCallback((patch: Partial<CalcOptions>) => {
     setOptions((prev) => {
       const next = { ...prev, ...patch }
@@ -62,49 +76,50 @@ export default function Page() {
   ]
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      {/* Subtle background pattern */}
+      <div className="fixed inset-0 dhaka-pattern pointer-events-none" />
+
       {/* Skip link */}
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium">
         Skip to main content
       </a>
 
       {/* Header */}
-      <header className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-3 md:py-4">
-          <div className="flex items-center justify-between mb-3">
+      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 md:py-5">
+          <div className="flex items-center justify-between mb-5">
             <div>
-              <h1 className="text-lg md:text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
+              <h1 className="font-heading text-xl md:text-2xl font-semibold text-foreground tracking-tight flex items-center gap-2.5">
                 <span className="text-2xl" role="img" aria-label="Nepal flag">🇳🇵</span>
-                {t('app.title')}
+                <span>{t('app.title')}</span>
               </h1>
-              <p className="text-xs text-muted-foreground">{t('app.subtitle')}</p>
+              <p className="text-xs text-muted-foreground mt-1 tracking-wide">{t('app.subtitle')}</p>
             </div>
-            <div className="flex items-center gap-2">
-              {/* Language toggle */}
+            <div className="flex items-center gap-1.5">
               <button
                 onClick={() => setLang(lang === 'en' ? 'ne' : 'en')}
                 aria-label={lang === 'en' ? 'Switch to Nepali' : 'English मा बदल्नुहोस्'}
-                className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-secondary/60 hover:bg-secondary px-2.5 py-1.5 rounded-lg transition-colors"
+                className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground bg-secondary/80 hover:bg-secondary px-3 py-2 rounded-lg transition-all"
               >
-                <Languages size={14} aria-hidden="true" />
+                <Languages size={13} aria-hidden="true" />
                 {t('lang.toggle')}
               </button>
-              {/* Theme toggle */}
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                 aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-                className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-secondary/60 hover:bg-secondary px-2.5 py-1.5 rounded-lg transition-colors"
+                className="flex items-center justify-center w-8 h-8 text-muted-foreground hover:text-foreground bg-secondary/80 hover:bg-secondary rounded-lg transition-all"
               >
                 {theme === 'dark' ? <Sun size={14} aria-hidden="true" /> : <Moon size={14} aria-hidden="true" />}
-                {theme === 'dark' ? t('theme.light') : t('theme.dark')}
               </button>
             </div>
           </div>
           <ModeSelector value={mode} onChange={setMode} />
         </div>
+        <div className="gradient-line" />
       </header>
 
-      <main id="main" className="max-w-7xl mx-auto px-4 py-6">
+      <main id="main" className="relative max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <AnimatePresence mode="wait">
           {mode === 'nepal' && (
             <motion.div
@@ -114,7 +129,7 @@ export default function Page() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
             >
-              <nav aria-label="Calculator sections" className="flex gap-1 mb-6 bg-secondary/40 rounded-xl p-1 max-w-md" role="tablist">
+              <nav aria-label="Calculator sections" className="flex gap-1 mb-8 bg-secondary/70 rounded-xl p-1 max-w-md border border-border/40" role="tablist">
                 {sections.map((s) => {
                   const Icon = s.icon
                   const active = section === s.id
@@ -132,7 +147,7 @@ export default function Page() {
                       {active && (
                         <motion.div
                           layoutId="section-pill"
-                          className="absolute inset-0 bg-card border border-border rounded-lg shadow-sm"
+                          className="absolute inset-0 bg-card rounded-lg ledger-shadow"
                           transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                         />
                       )}
@@ -148,8 +163,8 @@ export default function Page() {
               <AnimatePresence mode="wait">
                 {section === 'calculator' && (
                   <motion.div key="calc" id="section-calculator" role="tabpanel" aria-label={t('section.calculator')} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
-                    <div className="space-y-4">
+                    className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start">
+                    <div className="space-y-5">
                       <GrossSlider value={gross} onChange={setGross} />
                       <DeductionToggles gross={gross} options={options} maxCitMonthly={result.maxCitMonthly} onChange={handleOptionsChange} />
                       <FilingOptions options={options} onChange={handleOptionsChange} />
@@ -157,7 +172,7 @@ export default function Page() {
                       <SkipCITToggle result={result} options={options} />
                       <TaxGuide />
                     </div>
-                    <div className="lg:sticky lg:top-24 lg:self-start">
+                    <div className="lg:sticky lg:top-28 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:scrollbar-thin">
                       <StickyOutput result={result} />
                     </div>
                   </motion.div>
@@ -194,7 +209,7 @@ export default function Page() {
         </AnimatePresence>
       </main>
 
-      <footer className="border-t border-border mt-12 py-6 text-center">
+      <footer className="relative border-t border-border/50 mt-16 py-8 text-center">
         <p className="text-xs text-muted-foreground">
           {t('footer.disclaimer')}
         </p>
@@ -231,7 +246,7 @@ function ForeignMode() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
-      <div className="space-y-4">
+      <div className="space-y-5">
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
@@ -240,64 +255,42 @@ function ForeignMode() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/15 rounded-lg p-3">
-              <p className="text-xs text-blue-700 dark:text-blue-300">
+            <div className="bg-info/8 border border-info/15 rounded-lg p-4">
+              <p className="text-xs text-info">
                 {t('foreign.info')}
               </p>
             </div>
 
-            <label className="block">
-              <span className="text-xs text-muted-foreground font-semibold">{t('foreign.gross')}</span>
-              <div className="mt-1.5 flex items-center gap-3">
-                <span className="text-muted-foreground font-mono">₨</span>
-                <input type="text" inputMode="numeric"
-                  value={Math.round(gross).toLocaleString('en-IN')}
-                  onChange={(e) => { const v = parseInt(e.target.value.replace(/\D/g, ''), 10); if (!isNaN(v)) setGross(v) }}
-                  className="flex-1 bg-secondary/60 border border-border rounded-lg px-3 py-2 text-lg font-mono font-bold text-foreground focus:outline-none focus:border-primary/50 transition-colors"
-                />
-              </div>
-              <input type="range" min={TAX_CONFIG.ui.slider.min} max={TAX_CONFIG.ui.slider.max} step={TAX_CONFIG.ui.slider.step}
-                value={Math.min(gross, TAX_CONFIG.ui.slider.max)} onChange={(e) => setGross(Number(e.target.value))}
-                className="mt-2 w-full h-1.5 rounded-full appearance-none bg-secondary cursor-pointer accent-primary [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-background [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-background"
-              />
-            </label>
+            <MoneyInput value={gross} onChange={setGross} label={t('foreign.gross')}
+              min={TAX_CONFIG.ui.slider.min} max={TAX_CONFIG.ui.slider.max} step={TAX_CONFIG.ui.slider.step} showSlider />
 
             <div>
               <label className="text-xs text-muted-foreground font-semibold block mb-1.5">{t('foreign.country')}</label>
               <select value={country} onChange={(e) => setCountry(e.target.value)}
-                className="w-full bg-secondary/60 border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors">
+                className="w-full bg-background border-2 border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors">
                 {ALL_COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
-              {isDtaa && !isZero && <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">{t('foreign.dtaa')}</p>}
+              {isDtaa && !isZero && <p className="text-xs text-info mt-1">{t('foreign.dtaa')}</p>}
             </div>
 
             {isZero && (
-              <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg p-3">
+              <div className="bg-destructive/8 border border-destructive/15 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-1">
-                  <AlertTriangle size={14} className="text-red-600 dark:text-red-400" />
-                  <span className="text-xs font-semibold text-red-700 dark:text-red-400">{t('foreign.zerotax')}</span>
+                  <AlertTriangle size={14} className="text-destructive" />
+                  <span className="text-xs font-semibold text-destructive">{t('foreign.zerotax')}</span>
                 </div>
-                <p className="text-xs text-red-600 dark:text-red-300">{country} {t('foreign.zerotax.desc')}</p>
+                <p className="text-xs text-destructive/80">{country} {t('foreign.zerotax.desc')}</p>
               </div>
             )}
 
             {!isZero && (
-              <label className="block">
-                <span className="text-xs text-muted-foreground font-semibold">{t('foreign.taxpaid')}</span>
-                <div className="mt-1.5 flex items-center gap-3">
-                  <span className="text-muted-foreground font-mono">₨</span>
-                  <input type="text" inputMode="numeric" value={foreignTax > 0 ? Math.round(foreignTax).toLocaleString('en-IN') : ''} placeholder="0"
-                    onChange={(e) => { const v = parseInt(e.target.value.replace(/\D/g, ''), 10) || 0; setForeignTax(v) }}
-                    className="flex-1 bg-secondary/60 border border-border rounded-lg px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:border-primary/50 transition-colors"
-                  />
-                </div>
-              </label>
+              <MoneyInput value={foreignTax} onChange={setForeignTax} label={t('foreign.taxpaid')} size="sm" showSlider={false} />
             )}
 
             <div className="flex gap-2">
               {(['single', 'couple'] as const).map((s) => (
                 <button key={s} onClick={() => { setFiling(s); if (s === 'couple') setIsFemale(false) }}
-                  className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all border ${filing === s ? 'bg-primary/15 border-primary/30 text-primary' : 'bg-secondary/40 border-border text-muted-foreground hover:text-foreground/70'}`}>
+                  className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all border-2 ${filing === s ? 'bg-foreground text-background border-foreground' : 'bg-background border-border text-muted-foreground hover:border-foreground/30'}`}>
                   {t(s === 'single' ? 'filing.single' : 'filing.couple')}
                 </button>
               ))}
@@ -305,7 +298,7 @@ function ForeignMode() {
 
             <label className="flex items-center justify-between gap-3 cursor-pointer">
               <div>
-                <span className="text-sm text-foreground">{t('cit.title')}</span>
+                <span className="text-sm text-foreground font-medium">{t('cit.title')}</span>
                 <span className="block text-xs text-muted-foreground">{t('foreign.voluntary')}</span>
               </div>
               <Switch checked={useCit} onCheckedChange={(v: boolean) => setUseCit(v)} />
@@ -313,16 +306,16 @@ function ForeignMode() {
 
             <label className="flex items-center justify-between gap-3 cursor-pointer">
               <div>
-                <span className="text-sm text-foreground">{t('special.female')}</span>
+                <span className="text-sm text-foreground font-medium">{t('special.female')}</span>
                 <span className="block text-xs text-muted-foreground">{t('special.female.desc')}</span>
-                {filing === 'couple' && <span className="block text-xs text-amber-700 dark:text-amber-400">{t('special.female.denied')}</span>}
+                {filing === 'couple' && <span className="block text-xs text-destructive">{t('special.female.denied')}</span>}
               </div>
               <Switch checked={isFemale} onCheckedChange={(v: boolean) => setIsFemale(v)} disabled={filing === 'couple'} />
             </label>
           </CardContent>
         </Card>
       </div>
-      <div className="lg:sticky lg:top-24 lg:self-start">
+      <div className="lg:sticky lg:top-28 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:scrollbar-thin">
         <StickyOutput result={result} />
       </div>
     </div>
@@ -340,7 +333,7 @@ function FreelancerMode() {
   const inhand = gross - tax / 12
 
   return (
-    <div className="max-w-xl mx-auto space-y-4">
+    <div className="max-w-xl mx-auto space-y-5">
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
@@ -349,55 +342,20 @@ function FreelancerMode() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="bg-teal-50 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/15 rounded-lg p-3">
+          <div className="bg-positive/8 border border-positive/15 rounded-lg p-4">
             <div className="flex items-start gap-2">
-              <Info size={14} className="text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
-              <p className="text-xs text-teal-700 dark:text-teal-300">
+              <Info size={14} className="text-positive mt-0.5 shrink-0" />
+              <p className="text-xs text-positive">
                 {t('freelancer.info')}
               </p>
             </div>
           </div>
-          <label className="block">
-            <span className="text-xs text-muted-foreground font-semibold">{t('freelancer.gross')}</span>
-            <div className="mt-1.5 flex items-center gap-3">
-              <span className="text-muted-foreground font-mono">₨</span>
-              <input type="text" inputMode="numeric"
-                value={Math.round(gross).toLocaleString('en-IN')}
-                onChange={(e) => { const v = parseInt(e.target.value.replace(/\D/g, ''), 10); if (!isNaN(v)) setGross(v) }}
-                className="flex-1 bg-secondary/60 border border-border rounded-lg px-3 py-2 text-lg font-mono font-bold text-foreground focus:outline-none focus:border-primary/50 transition-colors"
-              />
-            </div>
-            <input type="range" min={TAX_CONFIG.ui.slider.min} max={TAX_CONFIG.ui.slider.max} step={TAX_CONFIG.ui.slider.step}
-              value={Math.min(gross, TAX_CONFIG.ui.slider.max)} onChange={(e) => setGross(Number(e.target.value))}
-              className="mt-2 w-full h-1.5 rounded-full appearance-none bg-secondary cursor-pointer accent-primary [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-background [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-background"
-            />
-          </label>
+          <MoneyInput value={gross} onChange={setGross} label={t('freelancer.gross')}
+            min={TAX_CONFIG.ui.slider.min} max={TAX_CONFIG.ui.slider.max} step={TAX_CONFIG.ui.slider.step} showSlider />
         </CardContent>
       </Card>
 
-      <Card>
-        <CardContent className="text-center py-4">
-          <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1 font-semibold">{t('output.inhand')}</p>
-          <div>
-            <span className="text-muted-foreground text-2xl font-mono mr-1">₨</span>
-            <AnimatedNumber value={inhand} format={(n) => Math.round(n).toLocaleString('en-IN')} className="text-4xl font-mono font-bold text-foreground" />
-          </div>
-          <div className="mt-4 grid grid-cols-3 gap-4 text-center">
-            <div>
-              <p className="text-xs text-muted-foreground">{t('common.monthly.tax')}</p>
-              <p className="font-mono text-sm text-red-600 dark:text-red-400">{formatNPR(tax / 12)}</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t('common.annual.tax')}</p>
-              <p className="font-mono text-sm text-red-600 dark:text-red-400">{formatNPR(tax)}</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t('common.effective.rate')}</p>
-              <p className="font-mono text-sm text-primary">{formatPct(flatRate)}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <FlatTaxOutput inhand={inhand} tax={tax} flatRate={flatRate} />
     </div>
   )
 }
@@ -413,7 +371,7 @@ function NonResidentMode() {
   const inhand = gross - tax / 12
 
   return (
-    <div className="max-w-xl mx-auto space-y-4">
+    <div className="max-w-xl mx-auto space-y-5">
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
@@ -422,56 +380,59 @@ function NonResidentMode() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/15 rounded-lg p-3">
+          <div className="bg-warm/8 border border-warm/15 rounded-lg p-4">
             <div className="flex items-start gap-2">
-              <Info size={14} className="text-purple-600 dark:text-purple-400 mt-0.5 shrink-0" />
-              <div className="text-xs text-purple-700 dark:text-purple-300">
+              <Info size={14} className="text-warm mt-0.5 shrink-0" />
+              <div className="text-xs text-warm">
                 <p>{t('nonresident.info1')}</p>
                 <p className="mt-1">{t('nonresident.info2')}</p>
               </div>
             </div>
           </div>
-          <label className="block">
-            <span className="text-xs text-muted-foreground font-semibold">{t('nonresident.gross')}</span>
-            <div className="mt-1.5 flex items-center gap-3">
-              <span className="text-muted-foreground font-mono">₨</span>
-              <input type="text" inputMode="numeric"
-                value={Math.round(gross).toLocaleString('en-IN')}
-                onChange={(e) => { const v = parseInt(e.target.value.replace(/\D/g, ''), 10); if (!isNaN(v)) setGross(v) }}
-                className="flex-1 bg-secondary/60 border border-border rounded-lg px-3 py-2 text-lg font-mono font-bold text-foreground focus:outline-none focus:border-primary/50 transition-colors"
-              />
-            </div>
-            <input type="range" min={TAX_CONFIG.ui.slider.min} max={TAX_CONFIG.ui.slider.max} step={TAX_CONFIG.ui.slider.step}
-              value={Math.min(gross, TAX_CONFIG.ui.slider.max)} onChange={(e) => setGross(Number(e.target.value))}
-              className="mt-2 w-full h-1.5 rounded-full appearance-none bg-secondary cursor-pointer accent-primary [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-background [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-background"
-            />
-          </label>
+          <MoneyInput value={gross} onChange={setGross} label={t('nonresident.gross')}
+            min={TAX_CONFIG.ui.slider.min} max={TAX_CONFIG.ui.slider.max} step={TAX_CONFIG.ui.slider.step} showSlider />
         </CardContent>
       </Card>
 
-      <Card>
-        <CardContent className="text-center py-4">
-          <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1 font-semibold">{t('output.inhand')}</p>
-          <div>
-            <span className="text-muted-foreground text-2xl font-mono mr-1">₨</span>
-            <AnimatedNumber value={inhand} format={(n) => Math.round(n).toLocaleString('en-IN')} className="text-4xl font-mono font-bold text-foreground" />
-          </div>
-          <div className="mt-4 grid grid-cols-3 gap-4 text-center">
-            <div>
-              <p className="text-xs text-muted-foreground">{t('common.monthly.tax')} (25%)</p>
-              <p className="font-mono text-sm text-red-600 dark:text-red-400">{formatNPR(tax / 12)}</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t('common.annual.tax')}</p>
-              <p className="font-mono text-sm text-red-600 dark:text-red-400">{formatNPR(tax)}</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t('common.effective.rate')}</p>
-              <p className="font-mono text-sm text-primary">{formatPct(flatRate)}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <FlatTaxOutput inhand={inhand} tax={tax} flatRate={flatRate} rateLabel="25%" />
     </div>
+  )
+}
+
+/* ─── Shared flat-tax output card ──────────────────────────────────── */
+
+function FlatTaxOutput({ inhand, tax, flatRate, rateLabel }: { inhand: number; tax: number; flatRate: number; rateLabel?: string }) {
+  const { t } = useApp()
+  return (
+    <Card>
+      <CardContent className="text-center py-6">
+        <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2 font-semibold">{t('output.inhand')}</p>
+        <div>
+          <span className="text-muted-foreground text-xl font-mono mr-1">₨</span>
+          <AnimatedNumber value={inhand} format={(n) => Math.round(n).toLocaleString('en-IN')} className="text-4xl font-heading font-semibold text-copper-gradient" />
+        </div>
+        <div className="mt-2">
+          <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-1 font-semibold">{t('output.annual.inhand')}</p>
+          <div>
+            <span className="text-muted-foreground text-sm font-mono mr-0.5">₨</span>
+            <AnimatedNumber value={inhand * 12} format={(n) => Math.round(n).toLocaleString('en-IN')} className="text-xl font-heading font-semibold text-foreground" />
+          </div>
+        </div>
+        <div className="mt-5 grid grid-cols-3 gap-4 text-center">
+          <div>
+            <p className="text-xs text-muted-foreground">{t('common.monthly.tax')}{rateLabel ? ` (${rateLabel})` : ''}</p>
+            <p className="font-mono text-sm text-primary font-medium">{formatNPR(tax / 12)}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">{t('common.annual.tax')}</p>
+            <p className="font-mono text-sm text-primary font-medium">{formatNPR(tax)}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">{t('common.effective.rate')}</p>
+            <p className="font-mono text-sm text-foreground font-semibold">{formatPct(flatRate)}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

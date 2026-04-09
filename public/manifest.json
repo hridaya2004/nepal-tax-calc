@@ -1,0 +1,26 @@
+{
+  "name": "Nepal Salary Tax Calculator",
+  "short_name": "Nepal Tax Calc",
+  "description": "Calculate your Nepal income tax, SSF, CIT, and take-home salary for FY 2081/82.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F3EE",
+  "theme_color": "#B4632A",
+  "orientation": "portrait-primary",
+  "categories": ["finance", "utilities"],
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/icon-192",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

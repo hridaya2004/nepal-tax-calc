@@ -23,7 +23,7 @@ export function ModeSelector({ value, onChange }: Props) {
   const { t } = useApp()
 
   return (
-    <nav aria-label="Income mode" className="flex bg-secondary/60 rounded-xl p-1 gap-1" role="tablist">
+    <nav aria-label="Income mode" className="flex bg-secondary/70 rounded-xl p-1 gap-0.5 border border-border/40" role="tablist">
       {modes.map((m) => {
         const Icon = m.icon
         const active = value === m.id
@@ -40,12 +40,12 @@ export function ModeSelector({ value, onChange }: Props) {
             {active && (
               <motion.div
                 layoutId="mode-pill"
-                className="absolute inset-0 bg-card border border-border rounded-lg shadow-sm"
+                className="absolute inset-0 bg-card rounded-lg ledger-shadow"
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               />
             )}
             <span className="relative z-10 flex items-center gap-1.5">
-              <Icon size={15} aria-hidden="true" />
+              <Icon size={14} aria-hidden="true" />
               <span className="hidden sm:inline">{t(m.label)}</span>
               <span className="sm:hidden">{t(m.short)}</span>
             </span>

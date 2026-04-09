@@ -29,7 +29,7 @@ export function SpecialSituations({ options, onChange }: Props) {
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-controls="special-situations-panel"
-          className="w-full flex items-center justify-between text-sm text-muted-foreground hover:text-foreground/80 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
+          className="w-full flex items-center justify-between text-sm text-foreground hover:text-foreground/80 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
         >
           <span className="font-semibold">{t('special.title')}</span>
           {open ? <ChevronUp size={16} aria-hidden="true" /> : <ChevronDown size={16} aria-hidden="true" />}
@@ -48,10 +48,10 @@ export function SpecialSituations({ options, onChange }: Props) {
               <div className="pt-4 space-y-4">
                 <label className="flex items-center justify-between gap-3 cursor-pointer">
                   <div className="flex-1">
-                    <span className="text-sm text-foreground">{t('special.female')}</span>
+                    <span className="text-sm text-foreground font-medium">{t('special.female')}</span>
                     <span className="block text-xs text-muted-foreground">{t('special.female.desc')}</span>
                     {options.filingStatus === 'couple' && (
-                      <span className="block text-xs text-amber-700 dark:text-amber-400">{t('special.female.denied')}</span>
+                      <span className="block text-xs text-destructive">{t('special.female.denied')}</span>
                     )}
                   </div>
                   <Switch
@@ -63,7 +63,7 @@ export function SpecialSituations({ options, onChange }: Props) {
 
                 <label className="flex items-center justify-between gap-3 cursor-pointer">
                   <div>
-                    <span className="text-sm text-foreground">{t('special.senior')}</span>
+                    <span className="text-sm text-foreground font-medium">{t('special.senior')}</span>
                     <span className="block text-xs text-muted-foreground">{formatNPR(TAX_CONFIG.specialExemptions.seniorCitizen.additional)} {t('special.senior.desc')}</span>
                   </div>
                   <Switch
@@ -74,7 +74,7 @@ export function SpecialSituations({ options, onChange }: Props) {
 
                 <label className="flex items-center justify-between gap-3 cursor-pointer">
                   <div>
-                    <span className="text-sm text-foreground">{t('special.disability')}</span>
+                    <span className="text-sm text-foreground font-medium">{t('special.disability')}</span>
                     <span className="block text-xs text-muted-foreground">
                       {formatNPR(TAX_CONFIG.specialExemptions.disability[options.filingStatus])} {t('special.disability.desc')}
                     </span>
@@ -86,7 +86,7 @@ export function SpecialSituations({ options, onChange }: Props) {
                 </label>
 
                 <div>
-                  <p className="text-sm text-foreground mb-2">{t('special.remote')}</p>
+                  <p className="text-sm text-foreground font-medium mb-2">{t('special.remote')}</p>
                   <div className="flex gap-1.5 flex-wrap">
                     {grades.map((g) => {
                       const val = TAX_CONFIG.deductions.remoteArea[g]
@@ -94,10 +94,10 @@ export function SpecialSituations({ options, onChange }: Props) {
                         <button
                           key={g}
                           onClick={() => onChange({ remoteAreaGrade: g })}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border-2 ${
                             options.remoteAreaGrade === g
-                              ? 'bg-primary/15 border-primary/30 text-primary'
-                              : 'bg-secondary/40 border-border text-muted-foreground hover:text-foreground/70'
+                              ? 'bg-foreground text-background border-foreground'
+                              : 'bg-background border-border text-muted-foreground hover:border-foreground/30'
                           }`}
                         >
                           {g === 'none' ? t('special.remote.none') : `Grade ${g}`}

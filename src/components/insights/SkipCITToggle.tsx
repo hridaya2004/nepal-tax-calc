@@ -36,7 +36,7 @@ export function SkipCITToggle({ result, options }: Props) {
       <button
         onClick={() => setShow(!show)}
         aria-expanded={show}
-        className="text-xs text-muted-foreground hover:text-foreground/70 transition-colors flex items-center gap-1.5 font-medium focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
+        className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5 font-medium focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg underline underline-offset-2"
       >
         <AlertTriangle size={13} aria-hidden="true" />
         {t('insights.skip.cit')}
@@ -49,18 +49,18 @@ export function SkipCITToggle({ result, options }: Props) {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <Card className="mt-2 border-amber-500/25">
+            <Card className="mt-2">
               <CardContent className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t('insights.extra.inhand')}</span>
-                  <span className="font-mono text-emerald-600 dark:text-emerald-400">+{formatNPR(extraInhand)}</span>
+                  <span className="font-mono text-positive font-medium">+{formatNPR(extraInhand)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t('insights.extra.tax')}</span>
-                  <span className="font-mono text-red-600 dark:text-red-400">+{formatNPR(extraTax)}</span>
+                  <span className="font-mono text-primary font-medium">+{formatNPR(extraTax)}</span>
                 </div>
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3">
-                  <p className="text-xs text-amber-800 dark:text-amber-300">
+                <div className="bg-warm/8 border border-warm/15 rounded-lg p-4">
+                  <p className="text-xs text-warm">
                     CIT is effectively <strong>{subsidyPct.toFixed(0)}% {t('insights.subsidy')}</strong> at your
                     current marginal slab. For every ₨100 you put in, you save ₨{subsidyPct.toFixed(0)} in
                     tax — money that would go to the government instead of your retirement fund.

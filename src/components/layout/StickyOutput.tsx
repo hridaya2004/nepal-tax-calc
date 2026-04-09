@@ -18,7 +18,7 @@ export function StickyOutput({ result }: Props) {
   const { t } = useApp()
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <Card>
         <CardContent>
           <InhandHero result={result} />
@@ -29,17 +29,17 @@ export function StickyOutput({ result }: Props) {
         <CardHeader>
           <CardTitle>{t('output.breakdown')}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2.5">
+        <CardContent className="space-y-3">
           <Row icon={<Wallet size={14} />} label={t('output.gross')} value={result.gross} color="text-foreground" />
           {result.ssfMonthly > 0 && (
-            <Row icon={<ArrowDown size={14} />} label={t('output.ssf')} value={-result.ssfMonthly} color="text-teal-600 dark:text-teal-400" />
+            <Row icon={<ArrowDown size={14} />} label={t('output.ssf')} value={-result.ssfMonthly} color="text-positive" />
           )}
           {result.citMonthly > 0 && (
-            <Row icon={<PiggyBank size={14} />} label={t('output.cit')} value={-result.citMonthly} color="text-blue-600 dark:text-blue-400" />
+            <Row icon={<PiggyBank size={14} />} label={t('output.cit')} value={-result.citMonthly} color="text-info" />
           )}
-          <Row icon={<Receipt size={14} />} label={t('output.tds')} value={-result.monthlyTax} color="text-red-600 dark:text-red-400" />
+          <Row icon={<Receipt size={14} />} label={t('output.tds')} value={-result.monthlyTax} color="text-primary" />
           <Separator />
-          <Row icon={<Wallet size={14} />} label={t('output.inhand.label')} value={result.inhand} color="text-primary" bold />
+          <Row icon={<Wallet size={14} />} label={t('output.inhand.label')} value={result.inhand} color="text-foreground" bold />
         </CardContent>
       </Card>
 
@@ -47,23 +47,23 @@ export function StickyOutput({ result }: Props) {
         <CardContent>
           <div className="flex items-center gap-2 mb-3">
             <PiggyBank size={16} className="text-primary" />
-            <span className="text-sm font-semibold text-foreground">{t('retirement.title')}</span>
+            <span className="text-sm font-heading font-semibold text-foreground">{t('retirement.title')}</span>
           </div>
           <p className="text-xs text-muted-foreground mb-3">{t('retirement.future')}</p>
           <div className="flex items-center justify-between text-center">
             <div className="flex-1">
               <p className="text-xs text-muted-foreground">SSF</p>
-              <p className="font-mono text-sm text-teal-600 dark:text-teal-400">{formatNPR(result.ssfMonthly)}</p>
+              <p className="font-mono text-sm text-positive">{formatNPR(result.ssfMonthly)}</p>
             </div>
             <span className="text-muted-foreground text-lg">+</span>
             <div className="flex-1">
               <p className="text-xs text-muted-foreground">CIT</p>
-              <p className="font-mono text-sm text-blue-600 dark:text-blue-400">{formatNPR(result.citMonthly)}</p>
+              <p className="font-mono text-sm text-info">{formatNPR(result.citMonthly)}</p>
             </div>
             <span className="text-muted-foreground text-lg">=</span>
             <div className="flex-1">
               <p className="text-xs text-muted-foreground">{t('retirement.total')}</p>
-              <p className="font-mono text-sm text-primary font-semibold">{formatNPR(result.retirementTotal)}</p>
+              <p className="font-mono text-sm text-foreground font-semibold">{formatNPR(result.retirementTotal)}</p>
             </div>
           </div>
         </CardContent>
@@ -76,13 +76,13 @@ export function StickyOutput({ result }: Props) {
         </CardHeader>
         <CardContent>
           <SlabWaterfall breakdown={result.slabBreakdown} annualTaxable={result.annualTaxable} />
-          <div className="mt-3 pt-3 border-t border-border flex justify-between text-xs">
+          <div className="mt-4 pt-3 border-t border-border flex justify-between text-xs">
             <span className="text-muted-foreground">{t('slab.annual.taxable')}</span>
             <span className="font-mono text-foreground">{formatNPR(result.annualTaxable)}</span>
           </div>
           <div className="flex justify-between text-xs mt-1">
             <span className="text-muted-foreground">{t('slab.annual.tax')}</span>
-            <span className="font-mono text-primary">{formatNPR(result.annualTax)}</span>
+            <span className="font-mono text-primary font-semibold">{formatNPR(result.annualTax)}</span>
           </div>
         </CardContent>
       </Card>

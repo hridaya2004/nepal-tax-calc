@@ -84,17 +84,17 @@ export function TaxSavingSummary({ result, options }: Props) {
       <CardContent>
         <div className="flex items-center gap-2 mb-4">
           <Sparkles size={16} className="text-primary" />
-          <span className="text-sm font-semibold text-foreground">{t('insights.saving.title')}</span>
+          <span className="text-sm font-heading font-semibold text-foreground">{t('insights.saving.title')}</span>
         </div>
 
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {items.filter((i) => i.active).map((item) => (
             <div key={item.label} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Check size={14} className="text-emerald-600 dark:text-emerald-400" />
-                <span className="text-sm text-foreground">{item.label}</span>
+                <Check size={14} className="text-positive" />
+                <span className="text-sm text-foreground font-medium">{item.label}</span>
               </div>
-              <span className="font-mono text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+              <span className="font-mono text-xs text-positive font-medium">
                 −{formatNPR(item.annualSaving)}{t('common.yr')}
               </span>
             </div>
@@ -102,16 +102,16 @@ export function TaxSavingSummary({ result, options }: Props) {
         </div>
 
         {unused.length > 0 && (
-          <div className="mt-4 pt-3 border-t border-border">
+          <div className="mt-5 pt-4 border-t border-border">
             <p className="text-xs text-muted-foreground font-medium mb-2">{t('insights.unclaimed')}</p>
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               {unused.map((item) => (
                 <div key={item.label} className="flex items-center justify-between opacity-60 hover:opacity-90 transition-opacity">
                   <div className="flex items-center gap-2">
                     <X size={14} className="text-muted-foreground" />
                     <span className="text-sm text-muted-foreground">{item.label}</span>
                   </div>
-                  <span className="font-mono text-xs text-amber-600 dark:text-amber-400">
+                  <span className="font-mono text-xs text-warm">
                     {t('insights.couldsave')} {formatNPR(item.potentialSaving!)}{t('common.yr')}
                   </span>
                 </div>
@@ -120,8 +120,8 @@ export function TaxSavingSummary({ result, options }: Props) {
           </div>
         )}
 
-        <div className="mt-4 pt-3 border-t border-border flex justify-between">
-          <span className="text-sm text-muted-foreground font-semibold">{t('insights.total.saving')}</span>
+        <div className="mt-5 pt-4 border-t border-border flex justify-between">
+          <span className="text-sm text-foreground font-semibold">{t('insights.total.saving')}</span>
           <span className="font-mono text-sm text-primary font-bold">{formatNPR(totalSaving)}</span>
         </div>
         <p className="text-xs text-muted-foreground mt-1">

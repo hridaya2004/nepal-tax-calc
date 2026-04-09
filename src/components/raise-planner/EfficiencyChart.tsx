@@ -35,20 +35,20 @@ export function EfficiencyChart({ bands }: Props) {
         <CardDescription>{t('raise.efficiency.desc')}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-1.5 max-h-72 overflow-y-auto">
+        <div className="space-y-2 max-h-72 overflow-y-auto">
           {bands.map((band, i) => (
             <div key={i} className="flex items-center gap-2">
               <span className="text-xs font-mono text-muted-foreground w-16 shrink-0 text-right">
                 {(band.from / 1000).toFixed(0)}K
               </span>
-              <div className="flex-1 h-5 bg-secondary/50 rounded overflow-hidden">
+              <div className="flex-1 h-6 bg-secondary rounded-md overflow-hidden">
                 <motion.div
-                  className="h-full rounded"
+                  className="h-full rounded-md"
                   style={{
                     backgroundColor:
-                      band.efficiency > 0.7 ? '#10b981' :
-                      band.efficiency > 0.5 ? '#eab308' :
-                      band.efficiency > 0.3 ? '#f97316' : '#ef4444',
+                      band.efficiency > 0.7 ? 'var(--positive)' :
+                      band.efficiency > 0.5 ? 'var(--warm)' :
+                      band.efficiency > 0.3 ? 'var(--primary)' : 'var(--destructive)',
                   }}
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.max(band.efficiency * 100, 1)}%` }}
