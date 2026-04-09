@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Fraunces, Outfit, JetBrains_Mono } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
 import { AppProvider } from "@/lib/app-context"
 import "./globals.css"
 
@@ -73,6 +74,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-200">
         <AppProvider>{children}</AppProvider>
+        <Analytics />
       </body>
     </html>
   )
