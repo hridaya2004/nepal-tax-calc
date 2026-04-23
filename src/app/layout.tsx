@@ -74,6 +74,9 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-200">
         <AppProvider>{children}</AppProvider>
+        <footer style={{ textAlign: "center", padding: "16px", fontSize: "13px", opacity: 0.6 }}>
+          Made by <a href="https://github.com/bishojbk" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>EJR</a>
+        </footer>
         <Analytics />
       </body>
     </html>
