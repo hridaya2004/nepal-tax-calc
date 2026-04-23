@@ -85,6 +85,17 @@ export function SpecialSituations({ options, onChange }: Props) {
                   />
                 </label>
 
+                <label className="flex items-center justify-between gap-3 cursor-pointer">
+                  <div>
+                    <span className="text-sm text-foreground font-medium">{t('special.medical')}</span>
+                    <span className="block text-xs text-muted-foreground">{t('special.medical.desc')}</span>
+                  </div>
+                  <Switch
+                    checked={options.hasMedicalExpenses}
+                    onCheckedChange={(v: boolean) => onChange({ hasMedicalExpenses: v })}
+                  />
+                </label>
+
                 <div>
                   <p className="text-sm text-foreground font-medium mb-2">{t('special.remote')}</p>
                   <div className="flex gap-1.5 flex-wrap">

@@ -14,7 +14,20 @@ const baseOpts: CalcOptions = {
   isSeniorCitizen: false,
   isFemale: false,
   foreignTaxPaidAnnual: 0,
+  hasMedicalExpenses: false,
 }
+
+test('medical tax credit applies Rs 750 against tax', () => {
+  const baseline = calculate(150_000, baseOpts)
+  const withMedical = calculate(150_000, { ...baseOpts, hasMedicalExpenses: true })
+  expect(baseline.annualTax - withMedical.annualTax).toBe(750)
+})
+
+test('medical tax credit cannot drive tax negative', () => {
+  // Tiny gross → tax is already 0, credit should not underflow.
+  const r = calculate(10_000, { ...baseOpts, hasMedicalExpenses: true })
+  expect(r.annualTax).toBeGreaterThanOrEqual(0)
+})
 
 /* ─── Existing verification tests ─────────────────────────────────── */
 

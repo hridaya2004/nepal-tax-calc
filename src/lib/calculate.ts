@@ -15,6 +15,7 @@ export interface CalcOptions {
   isSeniorCitizen: boolean
   isFemale: boolean
   foreignTaxPaidAnnual: number
+  hasMedicalExpenses: boolean
 }
 
 export interface CalcResult {
@@ -123,6 +124,11 @@ export function calculate(gross: number, opts: CalcOptions): CalcResult {
   const avgRate = annualTaxable > 0 ? annualTax / annualTaxable : 0
   const credit = Math.min(opts.foreignTaxPaidAnnual, annualTaxable * avgRate)
   annualTax = Math.max(0, annualTax - credit)
+
+  // Medical tax credit (Section 51): flat Rs 750 credit against tax when claimed
+  if (opts.hasMedicalExpenses) {
+    annualTax = Math.max(0, annualTax - TAX_CONFIG.rebates.medicalTaxCredit.max)
+  }
 
   const monthlyTax = annualTax / 12
   const inhand = gross - ssfMonthly - citMonthly - monthlyTax

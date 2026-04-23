@@ -45,6 +45,7 @@ export default function Page() {
     isSeniorCitizen: false,
     isFemale: false,
     foreignTaxPaidAnnual: 0,
+    hasMedicalExpenses: false,
   })
 
   // Restore state from URL on mount
@@ -250,6 +251,7 @@ function ForeignMode() {
     lifeInsurance: 0, healthInsurance: 0, buildingInsurance: 0, donationAnnual: 0,
     remoteAreaGrade: 'none', hasDisability: false, isSeniorCitizen: false,
     isFemale, foreignTaxPaidAnnual: isZero ? 0 : foreignTax,
+    hasMedicalExpenses: false,
   }
   const result = useMemo(() => calculate(gross, opts), [gross, opts])
 

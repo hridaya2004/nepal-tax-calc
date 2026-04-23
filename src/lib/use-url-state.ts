@@ -26,6 +26,7 @@ const PARAM_MAP = {
   sen: 'isSeniorCitizen',
   fem: 'isFemale',
   ftx: 'foreignTaxPaidAnnual',
+  med: 'hasMedicalExpenses',
 } as const
 
 const VALID_MODES: IncomeMode[] = ['nepal', 'foreign', 'freelancer', 'nonresident']
@@ -63,6 +64,7 @@ export function parseUrlState(): Partial<UrlState> | null {
   const boolParams: [string, keyof CalcOptions][] = [
     ['ssf', 'includeSSF'], ['cit', 'includeCIT'],
     ['dis', 'hasDisability'], ['sen', 'isSeniorCitizen'], ['fem', 'isFemale'],
+    ['med', 'hasMedicalExpenses'],
   ]
   for (const [key, prop] of boolParams) {
     const val = params.get(key)
@@ -108,6 +110,7 @@ export function parseUrlState(): Partial<UrlState> | null {
       isSeniorCitizen: opts.isSeniorCitizen ?? false,
       isFemale: opts.isFemale ?? false,
       foreignTaxPaidAnnual: opts.foreignTaxPaidAnnual ?? 0,
+      hasMedicalExpenses: opts.hasMedicalExpenses ?? false,
     }
   }
 
@@ -140,6 +143,7 @@ export function useUrlSync(mode: IncomeMode, gross: number, options: CalcOptions
     if (options.isSeniorCitizen) params.set('sen', '1')
     if (options.isFemale) params.set('fem', '1')
     if (options.foreignTaxPaidAnnual > 0) params.set('ftx', String(Math.round(options.foreignTaxPaidAnnual)))
+    if (options.hasMedicalExpenses) params.set('med', '1')
 
     const url = `${window.location.pathname}?${params.toString()}`
     window.history.replaceState(null, '', url)

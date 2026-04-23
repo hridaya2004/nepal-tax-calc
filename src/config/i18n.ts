@@ -62,6 +62,8 @@ const translations = {
   'special.senior.desc': { en: 'extra exemption', ne: 'अतिरिक्त छुट' },
   'special.disability': { en: 'Disability', ne: 'अपाङ्गता' },
   'special.disability.desc': { en: 'extra exemption — certificate required', ne: 'अतिरिक्त छुट — प्रमाणपत्र आवश्यक' },
+  'special.medical': { en: 'Medical Expenses', ne: 'चिकित्सा खर्च' },
+  'special.medical.desc': { en: 'Rs 750 tax credit (Section 51) — requires receipts', ne: 'रु ७५० कर छुट (दफा ५१) — रसिद आवश्यक' },
   'special.remote': { en: 'Remote Area Grade', ne: 'सुदूरवर्ती क्षेत्र ग्रेड' },
   'special.remote.none': { en: 'None', ne: 'कुनै पनि होइन' },
 
