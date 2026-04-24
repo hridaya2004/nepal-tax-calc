@@ -15,6 +15,7 @@ const PARAM_MAP = {
   g: 'gross',
   f: 'filingStatus',
   ssf: 'includeSSF',
+  ssfm: 'grossIncludesEmployerSSF',
   cit: 'includeCIT',
   ca: 'citAmount',
   li: 'lifeInsurance',
@@ -62,7 +63,7 @@ export function parseUrlState(): Partial<UrlState> | null {
   }
 
   const boolParams: [string, keyof CalcOptions][] = [
-    ['ssf', 'includeSSF'], ['cit', 'includeCIT'],
+    ['ssf', 'includeSSF'], ['ssfm', 'grossIncludesEmployerSSF'], ['cit', 'includeCIT'],
     ['dis', 'hasDisability'], ['sen', 'isSeniorCitizen'], ['fem', 'isFemale'],
     ['med', 'hasMedicalExpenses'],
   ]
@@ -99,6 +100,7 @@ export function parseUrlState(): Partial<UrlState> | null {
     result.options = {
       filingStatus: opts.filingStatus ?? 'single',
       includeSSF: opts.includeSSF ?? true,
+      grossIncludesEmployerSSF: opts.grossIncludesEmployerSSF ?? true,
       includeCIT: opts.includeCIT ?? true,
       citAmount: opts.citAmount ?? Infinity,
       lifeInsurance: opts.lifeInsurance ?? 0,
@@ -132,6 +134,8 @@ export function useUrlSync(mode: IncomeMode, gross: number, options: CalcOptions
     params.set('g', String(Math.round(gross)))
     params.set('f', options.filingStatus)
     params.set('ssf', options.includeSSF ? '1' : '0')
+    // Only emit non-default ssfm (default = true, loaded/CTC)
+    if (!options.grossIncludesEmployerSSF) params.set('ssfm', '0')
     params.set('cit', options.includeCIT ? '1' : '0')
     params.set('ca', options.citAmount === Infinity ? 'max' : String(Math.round(options.citAmount)))
     if (options.lifeInsurance > 0) params.set('li', String(options.lifeInsurance))

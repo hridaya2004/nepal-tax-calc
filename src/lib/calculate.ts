@@ -4,6 +4,12 @@ import { TAX_CONFIG } from '@/config/tax'
 export interface CalcOptions {
   filingStatus: FilingStatus
   includeSSF: boolean
+  // true  → entered gross already includes employer's 20% SSF (CTC/loaded — annexure convention).
+  //         Full 31% of basic deducts from gross for take-home.
+  // false → entered gross excludes employer SSF; employer pays 20% on top.
+  //         Only employee's 11% deducts from take-home; employer SSF is added
+  //         back to assessable income so tax stays consistent.
+  grossIncludesEmployerSSF: boolean
   includeCIT: boolean
   citAmount: number           // monthly; 0 to maxCitMonthly
   lifeInsurance: number       // annual
@@ -21,8 +27,10 @@ export interface CalcOptions {
 export interface CalcResult {
   gross: number
   basic: number
-  ssfMonthly: number
+  ssfMonthly: number              // amount actually deducted from gross for take-home
   ssfAnnual: number
+  ssfEmployeeMonthly: number      // employee's 11% share
+  ssfEmployerMonthly: number      // employer's 20% share (on top of gross in Mode B)
   citMonthly: number
   citAnnual: number
   maxCitMonthly: number
@@ -69,18 +77,46 @@ function calcSlabTax(
 
 export function calculate(gross: number, opts: CalcOptions): CalcResult {
   const annualGross = gross * 12
-  const basic = gross * TAX_CONFIG.salary.basicRatio
+  const { basicRatio } = TAX_CONFIG.salary
+  const { employeeRate, employerRate, totalRate } = TAX_CONFIG.ssf
 
-  // SSF
-  const ssfMonthly = opts.includeSSF ? basic * TAX_CONFIG.ssf.totalRate : 0
+  // Basic salary:
+  //   Mode A (loaded gross, default): basic = 60% of gross.
+  //   Mode B (employee gross):       basic = 60% of total CTC, where CTC = gross + employer SSF.
+  //     Solving for basic: basic × (1 - basicRatio × employerRate) = basicRatio × gross
+  //     → keeps basic (and therefore tax) consistent with the equivalent Mode A salary.
+  const basic = opts.grossIncludesEmployerSSF
+    ? gross * basicRatio
+    : (gross * basicRatio) / (1 - basicRatio * employerRate)
+
+  // SSF split
+  const ssfEmployeeMonthly = opts.includeSSF ? basic * employeeRate : 0
+  const ssfEmployerMonthly = opts.includeSSF ? basic * employerRate : 0
+  const ssfTotalMonthly = opts.includeSSF ? basic * totalRate : 0
+
+  // What comes out of gross for take-home:
+  //   Mode A: full 31% (employer 20% is already baked into the gross figure).
+  //   Mode B: only the employee's 11%.
+  const ssfMonthly = opts.grossIncludesEmployerSSF ? ssfTotalMonthly : ssfEmployeeMonthly
   const ssfAnnual = ssfMonthly * 12
 
-  // Retirement cap: min(5L, 1/3 of annual gross)
+  // Total SSF contribution that reduces taxable income (always 31% of basic, subject to cap)
+  const ssfTaxDeductionAnnual = ssfTotalMonthly * 12
+
+  // Assessable income for tax:
+  //   Mode A: gross × 12.
+  //   Mode B: (gross + employer SSF) × 12 — employer's contribution is part of
+  //   employee's assessable income under Nepal's Income Tax Act.
+  const annualAssessable = opts.grossIncludesEmployerSSF
+    ? annualGross
+    : annualGross + ssfEmployerMonthly * 12
+
+  // Retirement cap: min(5L, 1/3 of annual assessable income)
   const effectiveRetirementCap = Math.min(
     TAX_CONFIG.retirementCap.absoluteMax,
-    annualGross * TAX_CONFIG.retirementCap.ratioMax
+    annualAssessable * TAX_CONFIG.retirementCap.ratioMax
   )
-  const maxCitAnnual = Math.max(0, effectiveRetirementCap - ssfAnnual)
+  const maxCitAnnual = Math.max(0, effectiveRetirementCap - ssfTaxDeductionAnnual)
   const maxCitMonthly = maxCitAnnual / 12
 
   // CIT: use provided amount clamped to max, or 0 if CIT disabled
@@ -95,7 +131,7 @@ export function calculate(gross: number, opts: CalcOptions): CalcResult {
     ? TAX_CONFIG.specialExemptions.seniorCitizen.additional : 0
 
   // Taxable income (before donation, to calculate donation cap)
-  const preDonation = annualGross - ssfAnnual - citAnnual
+  const preDonation = annualAssessable - ssfTaxDeductionAnnual - citAnnual
     - opts.lifeInsurance - opts.healthInsurance - opts.buildingInsurance
     - remoteBonus - disabilityBonus - seniorBonus
 
@@ -134,11 +170,14 @@ export function calculate(gross: number, opts: CalcOptions): CalcResult {
   const inhand = gross - ssfMonthly - citMonthly - monthlyTax
 
   return {
-    gross, basic, ssfMonthly, ssfAnnual, citMonthly, citAnnual,
+    gross, basic,
+    ssfMonthly, ssfAnnual,
+    ssfEmployeeMonthly, ssfEmployerMonthly,
+    citMonthly, citAnnual,
     maxCitMonthly, effectiveRetirementCap,
     annualTaxable, annualTax, monthlyTax, inhand,
     effectiveRate: annualTaxable > 0 ? annualTax / annualTaxable : 0,
-    retirementTotal: ssfMonthly + citMonthly,
+    retirementTotal: ssfTotalMonthly + citMonthly,
     slabBreakdown: breakdown,
   }
 }

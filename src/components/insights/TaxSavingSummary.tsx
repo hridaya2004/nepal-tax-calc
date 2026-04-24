@@ -24,11 +24,14 @@ export function TaxSavingSummary({ result, options }: Props) {
   const activeSlab = [...result.slabBreakdown].reverse().find((s) => s.tax > 0)
   const marginalRate = activeSlab?.rate ?? 0
 
+  // Full SSF contribution (11% + 20%) reduces taxable income regardless of mode
+  const ssfTaxDeductionAnnual = (result.ssfEmployeeMonthly + result.ssfEmployerMonthly) * 12
+
   const items: Item[] = [
     {
       label: t('ssf.title'),
       active: options.includeSSF,
-      annualSaving: options.includeSSF ? result.ssfAnnual * marginalRate : 0,
+      annualSaving: options.includeSSF ? ssfTaxDeductionAnnual * marginalRate : 0,
       potentialSaving: !options.includeSSF
         ? result.gross * TAX_CONFIG.salary.basicRatio * TAX_CONFIG.ssf.totalRate * 12 * marginalRate
         : undefined,

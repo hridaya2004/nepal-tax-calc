@@ -40,10 +40,9 @@ export function RaisePlanner({ currentResult, options }: Props) {
   const overallEfficiency = grossDelta > 0 ? inhandDelta / grossDelta : 0
 
   // Employer cost: gross raise + employer SSF share on the raise
-  const employerSSFDelta = options.includeSSF
-    ? (targetGross * TAX_CONFIG.salary.basicRatio * TAX_CONFIG.ssf.employerRate)
-      - (currentResult.gross * TAX_CONFIG.salary.basicRatio * TAX_CONFIG.ssf.employerRate)
-    : 0
+  // In Mode B (employee-gross) the employer's 20% is already on top of gross,
+  // so the "extra CTC" is just the gross delta plus the employer SSF delta.
+  const employerSSFDelta = targetResult.ssfEmployerMonthly - currentResult.ssfEmployerMonthly
   const employerCost = grossDelta + employerSSFDelta
 
   // Detect new slab crossing

@@ -8,7 +8,7 @@ import { useApp } from '@/lib/app-context'
 import type { CalcResult } from '@/lib/calculate'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { ArrowDown, PiggyBank, Receipt, Wallet } from 'lucide-react'
+import { ArrowDown, ArrowUp, PiggyBank, Receipt, Wallet } from 'lucide-react'
 
 interface Props {
   result: CalcResult
@@ -16,6 +16,8 @@ interface Props {
 
 export function StickyOutput({ result }: Props) {
   const { t } = useApp()
+  const ssfToSSF = result.ssfEmployeeMonthly + result.ssfEmployerMonthly
+  const employerOnTop = ssfToSSF > 0 && result.ssfMonthly < ssfToSSF  // Mode B: employer SSF paid on top
 
   return (
     <div className="space-y-5">
@@ -31,6 +33,9 @@ export function StickyOutput({ result }: Props) {
         </CardHeader>
         <CardContent className="space-y-3">
           <Row icon={<Wallet size={14} />} label={t('output.gross')} value={result.gross} color="text-foreground" />
+          {employerOnTop && (
+            <Row icon={<ArrowUp size={14} />} label={t('ssf.ctc.extra')} value={result.ssfEmployerMonthly} color="text-muted-foreground" muted />
+          )}
           {result.ssfMonthly > 0 && (
             <Row icon={<ArrowDown size={14} />} label={t('output.ssf')} value={-result.ssfMonthly} color="text-positive" />
           )}
@@ -50,10 +55,26 @@ export function StickyOutput({ result }: Props) {
             <span className="text-sm font-heading font-semibold text-foreground">{t('retirement.title')}</span>
           </div>
           <p className="text-xs text-muted-foreground mb-3">{t('retirement.future')}</p>
+          {ssfToSSF > 0 && (
+            <div className="mb-3 grid grid-cols-3 gap-2 text-center bg-secondary/50 rounded-lg p-2.5 border border-border/40">
+              <div>
+                <p className="text-[10px] text-muted-foreground leading-tight">{t('ssf.employee')}</p>
+                <p className="font-mono text-xs text-foreground">{formatNPR(result.ssfEmployeeMonthly)}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-muted-foreground leading-tight">{t('ssf.employer')}</p>
+                <p className="font-mono text-xs text-foreground">{formatNPR(result.ssfEmployerMonthly)}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-muted-foreground leading-tight">{t('ssf.total')}</p>
+                <p className="font-mono text-xs text-positive font-semibold">{formatNPR(ssfToSSF)}</p>
+              </div>
+            </div>
+          )}
           <div className="flex items-center justify-between text-center">
             <div className="flex-1">
               <p className="text-xs text-muted-foreground">SSF</p>
-              <p className="font-mono text-sm text-positive">{formatNPR(result.ssfMonthly)}</p>
+              <p className="font-mono text-sm text-positive">{formatNPR(ssfToSSF)}</p>
             </div>
             <span className="text-muted-foreground text-lg">+</span>
             <div className="flex-1">
@@ -90,20 +111,22 @@ export function StickyOutput({ result }: Props) {
   )
 }
 
-function Row({ icon, label, value, color, bold }: {
+function Row({ icon, label, value, color, bold, muted }: {
   icon: React.ReactNode
   label: string
   value: number
   color: string
   bold?: boolean
+  muted?: boolean
 }) {
+  const sizeClass = muted ? 'text-xs' : 'text-sm'
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         <span className={`${color} opacity-70`}>{icon}</span>
-        <span className={`text-sm ${bold ? 'font-semibold text-foreground' : 'text-muted-foreground'}`}>{label}</span>
+        <span className={`${sizeClass} ${bold ? 'font-semibold text-foreground' : 'text-muted-foreground'}`}>{label}</span>
       </div>
-      <span className={`font-mono text-sm ${bold ? 'font-bold' : 'font-medium'} ${color}`}>
+      <span className={`font-mono ${sizeClass} ${bold ? 'font-bold' : 'font-medium'} ${color}`}>
         <AnimatedNumber value={Math.abs(value)} format={(n) => `${value < 0 ? '−' : ''}₨ ${Math.round(n).toLocaleString('en-IN')}`} className="" />
       </span>
     </div>

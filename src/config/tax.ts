@@ -41,8 +41,10 @@ export const TAX_CONFIG = {
       { upTo: 600_000,   rate: 0.01, label: '1% SST'  },
       { upTo: 800_000,   rate: 0.10, label: '10%'      },
       { upTo: 1_100_000, rate: 0.20, label: '20%'      },
-      { upTo: 2_100_000, rate: 0.30, label: '30%'      },
-      { upTo: 5_100_000, rate: 0.36, label: '36%'      },
+      // Above Rs 11L, couple thresholds match single — the couple benefit
+      // is only on the lower three bands (per Finance Act 2081/82, Sch 1.1).
+      { upTo: 2_000_000, rate: 0.30, label: '30%'      },
+      { upTo: 5_000_000, rate: 0.36, label: '36%'      },
       { upTo: Infinity,  rate: 0.39, label: '39%'      },
     ],
   },

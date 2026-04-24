@@ -34,6 +34,7 @@ export default function Page() {
   const [options, setOptions] = useState<CalcOptions>({
     filingStatus: 'single',
     includeSSF: true,
+    grossIncludesEmployerSSF: true,
     includeCIT: true,
     citAmount: Infinity,
     lifeInsurance: 0,
@@ -247,7 +248,8 @@ function ForeignMode() {
   const isDtaa = DTAA.includes(country)
 
   const opts: CalcOptions = {
-    filingStatus: filing, includeSSF: false, includeCIT: useCit, citAmount: Infinity,
+    filingStatus: filing, includeSSF: false, grossIncludesEmployerSSF: true,
+    includeCIT: useCit, citAmount: Infinity,
     lifeInsurance: 0, healthInsurance: 0, buildingInsurance: 0, donationAnnual: 0,
     remoteAreaGrade: 'none', hasDisability: false, isSeniorCitizen: false,
     isFemale, foreignTaxPaidAnnual: isZero ? 0 : foreignTax,

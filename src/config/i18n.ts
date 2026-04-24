@@ -31,7 +31,14 @@ const translations = {
 
   // SSF
   'ssf.title': { en: 'Social Security Fund', ne: 'सामाजिक सुरक्षा कोष' },
-  'ssf.desc': { en: '31% of basic — waives 1% SST slab', ne: 'आधारभूतको ३१% — १% सामाजिक सुरक्षा कर छुट' },
+  'ssf.desc': { en: 'Employee 11% + Employer 20% — waives 1% SST slab', ne: 'कर्मचारी ११% + नियोक्ता २०% — १% SST स्ल्याब छुट' },
+  'ssf.mode.label': { en: 'Gross includes employer 20% (CTC)', ne: 'कुलमा नियोक्ताको २०% समावेश (CTC)' },
+  'ssf.mode.loaded': { en: 'Loaded gross — full 31% deducts from take-home (matches most offer letters)', ne: 'CTC कुल — पूर्ण ३१% हातमा आउनेबाट कट्टी हुन्छ (अधिकांश नियुक्ति पत्रसँग मेल)' },
+  'ssf.mode.employee': { en: 'Employee gross — only 11% deducts; employer pays 20% on top', ne: 'कर्मचारी कुल — मात्र ११% कट्टी; नियोक्ताले २०% थप तिर्छ' },
+  'ssf.employee': { en: 'Employee share (11%)', ne: 'कर्मचारी भाग (११%)' },
+  'ssf.employer': { en: 'Employer share (20%)', ne: 'नियोक्ता भाग (२०%)' },
+  'ssf.total': { en: 'Total to SSF (31%)', ne: 'कुल SSF (३१%)' },
+  'ssf.ctc.extra': { en: 'Employer SSF (on top of gross)', ne: 'नियोक्ता SSF (कुलमाथि)' },
 
   // CIT
   'cit.title': { en: 'CIT Contribution', ne: 'नागरिक लगानी कोष' },
@@ -73,7 +80,7 @@ const translations = {
   'output.effective': { en: 'Effective rate', ne: 'प्रभावकारी दर' },
   'output.breakdown': { en: 'Monthly Breakdown', ne: 'मासिक विवरण' },
   'output.gross': { en: 'Gross Salary', ne: 'कुल तलब' },
-  'output.ssf': { en: 'SSF (31% of basic)', ne: 'सा.सु.को. (आधारभूतको ३१%)' },
+  'output.ssf': { en: 'SSF deduction', ne: 'सा.सु.को. कट्टी' },
   'output.cit': { en: 'CIT', ne: 'ना.ल.को.' },
   'output.tds': { en: 'Monthly TDS', ne: 'मासिक कर कट्टी' },
   'output.inhand.label': { en: 'In-Hand', ne: 'हातमा' },

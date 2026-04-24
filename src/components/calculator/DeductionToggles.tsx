@@ -31,7 +31,7 @@ export function DeductionToggles({ gross, options, maxCitMonthly, onChange }: Pr
       </CardHeader>
       <CardContent className="space-y-5">
         {/* SSF */}
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <label className="flex items-center justify-between gap-3 cursor-pointer">
             <div className="flex-1">
               <span className="text-sm font-medium text-foreground">{t('ssf.title')}</span>
@@ -44,9 +44,24 @@ export function DeductionToggles({ gross, options, maxCitMonthly, onChange }: Pr
               onCheckedChange={(v: boolean) => onChange({ includeSSF: v })}
             />
           </label>
+
           {options.includeSSF && (
-            <div className="pl-1 text-xs text-muted-foreground font-mono">
-              Employee 11% · Employer 20% · Basic {formatNPR(gross * TAX_CONFIG.salary.basicRatio)}
+            <div className="space-y-2 pl-1">
+              <label className="flex items-start justify-between gap-3 cursor-pointer">
+                <div className="flex-1">
+                  <span className="text-xs font-medium text-foreground">{t('ssf.mode.label')}</span>
+                  <span className="block text-[11px] text-muted-foreground mt-0.5 leading-snug">
+                    {options.grossIncludesEmployerSSF ? t('ssf.mode.loaded') : t('ssf.mode.employee')}
+                  </span>
+                </div>
+                <Switch
+                  checked={options.grossIncludesEmployerSSF}
+                  onCheckedChange={(v: boolean) => onChange({ grossIncludesEmployerSSF: v })}
+                />
+              </label>
+              <div className="text-[11px] text-muted-foreground font-mono">
+                Basic {formatNPR(gross * TAX_CONFIG.salary.basicRatio / (options.grossIncludesEmployerSSF ? 1 : (1 - TAX_CONFIG.salary.basicRatio * TAX_CONFIG.ssf.employerRate)))}
+              </div>
             </div>
           )}
         </div>
