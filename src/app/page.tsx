@@ -175,7 +175,7 @@ export default function Page() {
                 {section === 'calculator' && (
                   <motion.div key="calc" id="section-calculator" role="tabpanel" aria-label={t('section.calculator')} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                     className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start">
-                    <div className="space-y-5">
+                    <div className="space-y-5 p-1">
                       <GrossSlider value={gross} onChange={setGross} />
                       <DeductionToggles gross={gross} options={options} maxCitMonthly={result.maxCitMonthly} onChange={handleOptionsChange} />
                       <FilingOptions options={options} onChange={handleOptionsChange} />
@@ -183,7 +183,7 @@ export default function Page() {
                       <SkipCITToggle result={result} options={options} />
                       <TaxGuide />
                     </div>
-                    <div className="lg:sticky lg:top-28 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:scrollbar-thin">
+                    <div className="lg:sticky lg:top-28 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:scrollbar-thin p-1">
                       <StickyOutput result={result} />
                     </div>
                   </motion.div>
